@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm run build && node test/index.js",
+    "test": "mocha -r ts-node/register {test,src}/**/*.ts",
     "format": "prettier --write './src/**/*.ts'",
     "build": "npm run build:es6 && npm run build:cjs",
     "build:es6": "tsc --module es6 --outDir ./lib/es6/",
@@ -33,9 +33,12 @@
   "author": "Jan van Brügge <supermanitu@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/mocha": "^5.2.0",
+    "@types/node": "^9.6.6",
+    "mocha": "^5.1.1",
     "prettier": "^1.12.1",
     "release-it": "^3.2.0",
-    "tape": "~2.0.0",
+    "ts-node": "^6.0.0",
     "typescript": "^2.8.3"
   }
 }

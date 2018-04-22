@@ -12,10 +12,10 @@ export function createMatches<T>(
         }
 
         const { tagName, id, classList, attributes } = selectorParser(selector);
-        if (tagName.toLowerCase() !== opts.tag(node).toLowerCase()) {
+        if (tagName && tagName.toLowerCase() !== opts.tag(node).toLowerCase()) {
             return false;
         }
-        if (id !== opts.id(node)) {
+        if (id && id !== opts.id(node)) {
             return false;
         }
         const classes = opts.className(node);
@@ -29,6 +29,7 @@ export function createMatches<T>(
             const attr = opts.attr(node, key);
             const t = attributes[key][0];
             const v = attributes[key][1];
+
             if (!attr) {
                 return false;
             }

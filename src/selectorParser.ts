@@ -37,6 +37,7 @@ export function selectorParser(selector: string): Selector {
                 'Invalid selector, universal selector has to be in front'
             );
         }
+
         if (state === 0 || state === 1) {
             switch (c) {
                 case '*':
