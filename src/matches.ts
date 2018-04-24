@@ -5,14 +5,8 @@ export function createMatches<T>(
     opts: Options<T>
 ): (selector: string, node: T) => boolean {
     return function matches(selector: string, node: T): boolean {
-        if (/,|>/.test(selector)) {
-            throw new Error(
-                'matches can only process selectors that target a single element'
-            );
-        }
-
-        const { tagName, id, classList, attributes } = selectorParser(selector);
-        if (tagName && tagName.toLowerCase() !== opts.tag(node).toLowerCase()) {
+        const { tag, id, classList, attributes } = selectorParser(selector);
+        if (tag && tag.toLowerCase() !== opts.tag(node).toLowerCase()) {
             return false;
         }
         if (id && id !== opts.id(node)) {

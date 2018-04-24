@@ -24,7 +24,7 @@ describe('matches', () => {
     it('should match against a simple selector', () => {
         const testElement = {
             tag: 'div',
-            className: 'foo bar baz',
+            className: 'foo bar baz'
         };
 
         assert.equal(matches('div.foo.bar', testElement), true);
@@ -33,7 +33,7 @@ describe('matches', () => {
     it('should not match against a simple selector', () => {
         const testElement = {
             tag: 'div',
-            className: 'foo bar baz',
+            className: 'foo bar baz'
         };
 
         assert.equal(matches('div.foo.buz', testElement), false);
@@ -50,7 +50,10 @@ describe('matches', () => {
             }
         };
 
-        assert.equal(matches('[test="foo"][bar^="buz"][zuz~="loo"]', testElement), true);
+        assert.equal(
+            matches('[test="foo"][bar^="buz"][zuz~="loo"]', testElement),
+            true
+        );
     });
 
     it('should not match against an attribute selector', () => {
@@ -92,7 +95,9 @@ describe('matches', () => {
             }
         };
 
-        assert.throws(() => matches('div#id#oooo', testElement), /Invalid selector, cannot specify id twice/);
+        assert.throws(
+            () => matches('div#id#oooo', testElement),
+            /Invalid selector, only one id is allowed/
+        );
     });
-
 });
