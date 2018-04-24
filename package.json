@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register {test,src}/**/*.ts",
+    "test": "mocha -r ts-node/register --timeout 10000 {test,src}/**/*.ts",
     "format": "prettier --write './{src,test}/**/*.ts'",
     "build": "npm run build:es6 && npm run build:cjs",
     "build:es6": "tsc --module es6 --outDir ./lib/es6/",
