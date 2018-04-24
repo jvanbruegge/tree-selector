@@ -1,4 +1,4 @@
-import { createMatches } from '../src/matches';
+import { createMatches } from '../src/index';
 
 const assert = require('assert');
 

@@ -1,4 +1,4 @@
-import { selectorParser } from '../src/selectorParser';
+import { selectorParser } from '../src/index';
 import { permutations } from './utils';
 
 const assert = require('assert');
