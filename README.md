@@ -1,4 +1,5 @@
 # tree-selector
+[![Build Status](https://travis-ci.org/jvanbruegge/tree-selector.svg?branch=master)](https://travis-ci.org/jvanbruegge/tree-selector)
 
 build a matching function in CSS for any nested object structure!
 
