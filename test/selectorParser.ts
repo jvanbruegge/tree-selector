@@ -34,7 +34,7 @@ describe('selectorParser', () => {
             const sel = selectorArray.join('');
             const result = selectorParser(sel);
             result.classList.sort();
-            assert.deepEqual(result, expected);
+            assert.deepStrictEqual(result, expected);
 
             const result2 = selectorParser('tag' + sel);
             result2.classList.sort();
@@ -69,5 +69,62 @@ describe('selectorParser', () => {
                 /Parse error, invalid selector at char \d+/
             );
         }
+    });
+
+    it('should parse a simple subtree selector', () => {
+        const selector = 'div#id div';
+        const result = selectorParser(selector);
+        const expected = {
+            id: 'id',
+            tag: 'div',
+            classList: [],
+            attributes: {},
+            nextSelector: [
+                'subtree',
+                {
+                    id: '',
+                    tag: 'div',
+                    classList: [],
+                    attributes: {},
+                    nextSelector: undefined
+                }
+            ]
+        };
+
+        assert.deepStrictEqual(result, expected);
+    });
+
+    it('should parse a complex combinator selector', () => {
+        const selector = 'div#id div + #id[attr   =  "  f"]';
+        const result = selectorParser(selector);
+        const expected = {
+            id: 'id',
+            tag: 'div',
+            classList: [],
+            attributes: {},
+            nextSelector: [
+                'subtree',
+                {
+                    id: '',
+                    tag: 'div',
+                    classList: [],
+                    attributes: {},
+                    nextSelector: [
+                        'nextSibling',
+                        {
+                            id: 'id',
+                            tag: '',
+                            classList: [],
+                            attributes: {
+                                attr: ['exact', '  f']
+                            },
+                            nextSelector: undefined
+                        }
+                    ]
+                }
+            ]
+        };
+
+        assert.deepStrictEqual(result, expected);
     });
 });

@@ -5,7 +5,16 @@ export function createMatches<T>(
     opts: Options<T>
 ): (selector: string, node: T) => boolean {
     return function matches(selector: string, node: T): boolean {
-        const { tag, id, classList, attributes } = selectorParser(selector);
+        const { tag, id, classList, attributes, nextSelector } = selectorParser(
+            selector
+        );
+
+        if (nextSelector !== undefined) {
+            throw new Error(
+                'matches can only process selectors that target a single element'
+            );
+        }
+
         if (tag && tag.toLowerCase() !== opts.tag(node).toLowerCase()) {
             return false;
         }

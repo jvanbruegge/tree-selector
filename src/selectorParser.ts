@@ -3,6 +3,7 @@ export interface Selector {
     id: string;
     classList: string[];
     attributes: Attributes;
+    nextSelector: [Combinator, Selector] | undefined;
 }
 
 export interface Attributes {
@@ -18,6 +19,8 @@ export type AttributeMatch =
     | 'whitespace'
     | 'dash';
 
+export type Combinator = 'subtree' | 'child' | 'nextSibling' | 'sibling';
+
 const IDENT = '[\\w-]+';
 const SPACE = '[ \t]*';
 const STRING = `"[^"]*"`;
@@ -28,8 +31,17 @@ const ID = `(?:#${IDENT})`;
 const OP = `(?:=|\\$=|\\^=|\\*=|~=|\\|=)`;
 const ATTR = `(?:\\[${SPACE}${IDENT}${SPACE}(?:${OP}${SPACE}${STRING}${SPACE})?\\])`;
 
+const SUBTREE = `(?:[ \t]+)`;
+const CHILD = `(?:${SPACE}(>)${SPACE})`;
+const NEXT_SIBLING = `(?:${SPACE}(\\+)${SPACE})`;
+const SIBLING = `(?:${SPACE}(~)${SPACE})`;
+
+const COMBINATOR = `(?:${SUBTREE}|${CHILD}|${NEXT_SIBLING}|${SIBLING})`;
+
 const TAG = `(:?${IDENT})?`;
-const TOKENS = `${CLASS}|${ID}|${ATTR}`;
+const TOKENS = `${CLASS}|${ID}|${ATTR}|${COMBINATOR}`;
+
+const combinatorRegex = new RegExp(`^${COMBINATOR}$`);
 
 /**
  * Parses a css selector into a normalized object.
@@ -45,14 +57,29 @@ export function selectorParser(selector: string): Selector {
 
     const matches: string[] = [];
 
+    let nextSelector = undefined;
+    let lastCombinator = undefined;
+    let index = -1;
+
     while (regex.lastIndex < sel.length) {
         const match = regex.exec(sel);
-        if (!match) {
+        if (!match && lastCombinator === undefined) {
             throw new Error(
                 `Parse error, invalid selector at char ${regex.lastIndex}`
             );
+        } else if (match && combinatorRegex.test(match[0])) {
+            const comb = (combinatorRegex.exec(match[0]) as string[])[0];
+            lastCombinator = comb;
+            index = regex.lastIndex;
         } else {
-            matches.push(match[0]);
+            if (lastCombinator !== undefined) {
+                nextSelector = [
+                    getCombinator(lastCombinator),
+                    selectorParser(sel.substring(index))
+                ] as [Combinator, Selector];
+                break;
+            }
+            matches.push((match as string[])[0]);
         }
     }
 
@@ -81,7 +108,8 @@ export function selectorParser(selector: string): Selector {
         id: ids[0] || '',
         tag,
         classList,
-        attributes: attrs
+        attributes: attrs,
+        nextSelector
     };
 }
 
@@ -101,5 +129,18 @@ function getOp(op: string): string {
             return 'dash';
         default:
             return 'truthy';
+    }
+}
+
+function getCombinator(comb: string): string {
+    switch (comb.trim()) {
+        case '>':
+            return 'child';
+        case '+':
+            return 'nextSibling';
+        case '~':
+            return 'sibling';
+        default:
+            return 'subtree';
     }
 }

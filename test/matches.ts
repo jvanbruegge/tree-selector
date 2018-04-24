@@ -100,4 +100,13 @@ describe('matches', () => {
             /Invalid selector, only one id is allowed/
         );
     });
+
+    it('should throw when selector has a combinator', () => {
+        const selector = 'div.class span#id';
+
+        assert.throws(
+            () => matches(selector, {}),
+            /matches can only process selectors that target a single element/
+        );
+    });
 });
