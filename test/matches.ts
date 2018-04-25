@@ -1,24 +1,10 @@
 import { createMatches } from '../src/index';
 
+import { VNode, options } from './vnode';
+
 const assert = require('assert');
 
-interface VNode {
-    tag?: string;
-    className?: string;
-    attributes?: any;
-    children?: (string | VNode)[];
-    contents?: string;
-    id?: string;
-}
-
-const matches = createMatches<VNode>({
-    tag: n => n.tag || '',
-    className: n => n.className || '',
-    attr: (n, attr) => n.attributes[attr] || '',
-    children: n => n.children || [],
-    contents: n => n.contents || '',
-    id: n => n.id || ''
-});
+const matches = createMatches<VNode>(options);
 
 describe('matches', () => {
     it('should match against a simple selector', () => {
@@ -105,7 +91,7 @@ describe('matches', () => {
         const selector = 'div.class span#id';
 
         assert.throws(
-            () => matches(selector, {}),
+            () => matches(selector, { tag: 'div' }),
             /matches can only process selectors that target a single element/
         );
     });

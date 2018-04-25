@@ -1,13 +1,12 @@
 import { Options } from './types';
-import { selectorParser } from './selectorParser';
+import { parseSelector, Selector } from './selectorParser';
 
 export function createMatches<T>(
     opts: Options<T>
-): (selector: string, node: T) => boolean {
-    return function matches(selector: string, node: T): boolean {
-        const { tag, id, classList, attributes, nextSelector } = selectorParser(
-            selector
-        );
+): (selector: string | Selector, node: T) => boolean {
+    return function matches(selector: string | Selector, node: T): boolean {
+        const { tag, id, classList, attributes, nextSelector } =
+            typeof selector === 'object' ? selector : parseSelector(selector);
 
         if (nextSelector !== undefined) {
             throw new Error(

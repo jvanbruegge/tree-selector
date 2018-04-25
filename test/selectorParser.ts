@@ -1,9 +1,9 @@
-import { selectorParser } from '../src/index';
+import { parseSelector } from '../src/index';
 import { permutations } from './utils';
 
 const assert = require('assert');
 
-describe('selectorParser', () => {
+describe('parseSelector', () => {
     it('should parse all permutations of a selector', () => {
         const selectors = [
             '.class2',
@@ -32,11 +32,11 @@ describe('selectorParser', () => {
         const tests = permutations(selectors);
         for (let selectorArray of tests) {
             const sel = selectorArray.join('');
-            const result = selectorParser(sel);
+            const result = parseSelector(sel);
             result.classList.sort();
             assert.deepStrictEqual(result, expected);
 
-            const result2 = selectorParser('tag' + sel);
+            const result2 = parseSelector('tag' + sel);
             result2.classList.sort();
             assert.deepStrictEqual(result2, { ...expected, tag: 'tag' });
         }
@@ -44,7 +44,7 @@ describe('selectorParser', () => {
 
     it('should throw when specifying an id twice', () => {
         assert.throws(
-            () => selectorParser('#id1#id2'),
+            () => parseSelector('#id1#id2'),
             /Invalid selector, only one id is allowed/
         );
     });
@@ -65,7 +65,7 @@ describe('selectorParser', () => {
         const tests = permutations(selectors);
         for (let selectorArray of tests) {
             assert.throws(
-                () => selectorParser(selectorArray.join('')),
+                () => parseSelector(selectorArray.join('')),
                 /Parse error, invalid selector at char \d+/
             );
         }
@@ -73,7 +73,7 @@ describe('selectorParser', () => {
 
     it('should parse a simple subtree selector', () => {
         const selector = 'div#id div';
-        const result = selectorParser(selector);
+        const result = parseSelector(selector);
         const expected = {
             id: 'id',
             tag: 'div',
@@ -96,7 +96,7 @@ describe('selectorParser', () => {
 
     it('should parse a complex combinator selector', () => {
         const selector = 'div#id div + #id[attr   =  "  f"]';
-        const result = selectorParser(selector);
+        const result = parseSelector(selector);
         const expected = {
             id: 'id',
             tag: 'div',

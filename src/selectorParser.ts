@@ -47,7 +47,7 @@ const combinatorRegex = new RegExp(`^${COMBINATOR}$`);
  * Parses a css selector into a normalized object.
  * Expects a selector for a single element only, no `>` or the like!
  */
-export function selectorParser(selector: string): Selector {
+export function parseSelector(selector: string): Selector {
     const sel = selector.trim();
     let tagRegex = new RegExp(TAG, 'y');
     const [tag] = (tagRegex.exec(sel) as any) as [string];
@@ -75,7 +75,7 @@ export function selectorParser(selector: string): Selector {
             if (lastCombinator !== undefined) {
                 nextSelector = [
                     getCombinator(lastCombinator),
-                    selectorParser(sel.substring(index))
+                    parseSelector(sel.substring(index))
                 ] as [Combinator, Selector];
                 break;
             }
