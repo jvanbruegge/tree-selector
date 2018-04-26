@@ -26,6 +26,15 @@ describe('matches', () => {
         assert.equal(matches('div.foo.buz', testElement), false);
     });
 
+    it('should not match when class names overlap', () => {
+        const testElement = {
+            tag: 'div',
+            className: 'nomatches'
+        };
+
+        assert.equal(matches('.matches', testElement), false);
+    });
+
     it('should match against an attribute selector', () => {
         const testElement = {
             tag: 'div',
@@ -55,6 +64,20 @@ describe('matches', () => {
         };
 
         assert.equal(matches('div[bar="buz"][test="foo"]', testElement), false);
+    });
+
+    it('should match against an attribute selector with number', () => {
+        const testElement = {
+            tag: 'div',
+            className: 'foo bar baz',
+            attributes: {
+                test: 'foo',
+                bar: 'buzjjjjjjj',
+                zuz: 1
+            }
+        };
+
+        assert.equal(matches('div[zuz=1]', testElement), true);
     });
 
     it('should not match non-existant attributes', () => {

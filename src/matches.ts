@@ -20,7 +20,7 @@ export function createMatches<T>(
         if (id && id !== opts.id(node)) {
             return false;
         }
-        const classes = opts.className(node);
+        const classes = opts.className(node).split(' ');
         for (let i = 0; i < classList.length; i++) {
             if (classes.indexOf(classList[i]) === -1) {
                 return false;
@@ -37,21 +37,25 @@ export function createMatches<T>(
             }
             if (t === 'exact' && attr !== v) {
                 return false;
-            }
-            if (t === 'startsWith' && !attr.startsWith(v)) {
-                return false;
-            }
-            if (t === 'endsWith' && !attr.endsWith(v)) {
-                return false;
-            }
-            if (t === 'contains' && attr.indexOf(v) === -1) {
-                return false;
-            }
-            if (t === 'whitespace' && attr.split(' ').indexOf(v) === -1) {
-                return false;
-            }
-            if (t === 'dash' && attr.split('-').indexOf(v) === -1) {
-                return false;
+            } else if(t !== 'exact') {
+                if(typeof v !== 'string') {
+                    throw new Error('All non-string values have to be an exact match');
+                }
+                if (t === 'startsWith' && !attr.startsWith(v)) {
+                    return false;
+                }
+                if (t === 'endsWith' && !attr.endsWith(v)) {
+                    return false;
+                }
+                if (t === 'contains' && attr.indexOf(v) === -1) {
+                    return false;
+                }
+                if (t === 'whitespace' && attr.split(' ').indexOf(v) === -1) {
+                    return false;
+                }
+                if (t === 'dash' && attr.split('-').indexOf(v) === -1) {
+                    return false;
+                }
             }
         }
 

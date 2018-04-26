@@ -16,7 +16,7 @@ export type Pseudo =
     | ['contains', string];
 
 export interface Attributes {
-    [attr: string]: [AttributeMatch, string];
+    [attr: string]: [AttributeMatch, string | number | boolean];
 }
 
 export type AttributeMatch =
@@ -32,13 +32,13 @@ export type Combinator = 'subtree' | 'child' | 'nextSibling' | 'sibling';
 
 const IDENT = '[\\w-]+';
 const SPACE = '[ \t]*';
-const STRING = `"[^"]*"`;
+const VALUE = `[^\\]]+`;
 
 const CLASS = `(?:\\.${IDENT})`;
 const ID = `(?:#${IDENT})`;
 
 const OP = `(?:=|\\$=|\\^=|\\*=|~=|\\|=)`;
-const ATTR = `(?:\\[${SPACE}${IDENT}${SPACE}(?:${OP}${SPACE}${STRING}${SPACE})?\\])`;
+const ATTR = `(?:\\[${SPACE}${IDENT}${SPACE}(?:${OP}${SPACE}${VALUE}${SPACE})?\\])`;
 
 const SUBTREE = `(?:[ \t]+)`;
 const CHILD = `(?:${SPACE}(>)${SPACE})`;
@@ -107,13 +107,13 @@ export function parseSelector(selector: string): Selector {
     }
 
     const postprocessRegex = new RegExp(
-        `(${IDENT})${SPACE}(${OP})?${SPACE}(${STRING})?`
+        `(${IDENT})${SPACE}(${OP})?${SPACE}(${VALUE})?`
     );
     const attrs = matches
         .filter(s => s.startsWith('['))
         .map(s => (postprocessRegex.exec(s) as string[]).slice(1, 4))
         .map(([attr, op, val]) => ({
-            [attr]: [getOp(op), val ? val.slice(1, -1) : val]
+            [attr]: [getOp(op), val ? parseAttrValue(val) : val]
         }))
         .reduce((acc, curr) => ({ ...acc, ...curr }), {}) as Attributes;
 
@@ -129,6 +129,19 @@ export function parseSelector(selector: string): Selector {
         nextSelector,
         pseudos
     };
+}
+
+function parseAttrValue(v: string): string | boolean | number {
+    if(v.startsWith('"')) {
+        return v.slice(1, -1);
+    }
+    if(v === "true") {
+        return true;
+    }
+    if(v === "false") {
+        return false;
+    }
+    return parseFloat(v);
 }
 
 function postProcessPseudos(sel: string): Pseudo {

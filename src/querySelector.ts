@@ -3,12 +3,14 @@ import { Options } from './types';
 import { createMatches } from './matches';
 
 export function createQuerySelector<T>(
-    options: Options<T>
+    options: Options<T>,
+    matches?: (sel: string | Selector, node: T) => T | boolean
 ): (sel: string | Selector, node: T) => T[] {
-    const matches = createMatches(options);
+    const _matches = matches || createMatches(options);
 
     function findSubtree(selector: Selector, depth: number, node: T): T[] {
-        const matched = matches(selector, node) ? [node] : [];
+        const n = _matches(selector, node);
+        const matched = n ? (typeof n === 'object' ? [n] : [node]) : [];
         if (depth === 0) {
             return matched;
         }
@@ -33,8 +35,13 @@ export function createQuerySelector<T>(
             if (typeof siblings[i] === 'string') {
                 continue;
             }
-            if (matches(selector, siblings[i] as T)) {
-                results.push(siblings[i] as T);
+            const n = _matches(selector, siblings[i] as T);
+            if (n) {
+                if(typeof n === 'object') {
+                    results.push(n);
+                } else {
+                    results.push(siblings[i] as T);
+                }
             }
 
             if (next) {
