@@ -102,7 +102,6 @@ export function createMatches<T>(
                     const add = parseInt(parseResult[3] || '0');
                     if (
                         factor &&
-                        parseResult[1] &&
                         parseResult[2] === 'n' &&
                         index % factor !== add
                     ) {
@@ -115,8 +114,8 @@ export function createMatches<T>(
                     ) {
                         return false;
                     } else if (
-                        !parseResult[2] &&
-                        index !== parseInt(parseResult[0] + parseResult[1])
+                        !parseResult[2] && factor &&
+                        index !== factor - 1
                     ) {
                         return false;
                     }

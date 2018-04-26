@@ -148,7 +148,11 @@ describe('parseSelector', () => {
         for (let [k, v] of pseudoSelectors) {
             let selector = 'div:' + k;
             if (v !== undefined) {
-                selector += `(${v})`;
+                if(k === 'contains') {
+                    selector += `("${v}")`;
+                } else {
+                    selector += `(${v})`;
+                }
             }
             const result = parseSelector(selector);
             const expected = {

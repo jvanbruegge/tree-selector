@@ -47,7 +47,7 @@ const SIBLING = `(?:${SPACE}(~)${SPACE})`;
 
 const COMBINATOR = `(?:${SUBTREE}|${CHILD}|${NEXT_SIBLING}|${SIBLING})`;
 
-const CONTAINS = `contains\\([^\\)]*\\)`;
+const CONTAINS = `contains\\("[^"]*"\\)`;
 const FORMULA = `(?:even|odd|\\d*(?:-?n(?:\\+\\d+)?)?)`;
 const NTH_CHILD = `nth-child\\(${FORMULA}\\)`;
 
@@ -154,7 +154,7 @@ function postProcessPseudos(sel: string): Pseudo {
         return [sel, undefined] as Pseudo;
     }
     if (sel.startsWith('contains')) {
-        const text = sel.slice(9, -1);
+        const text = sel.slice(10, -2);
         return ['contains', text];
     }
 
