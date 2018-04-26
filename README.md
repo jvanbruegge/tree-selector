@@ -1,5 +1,5 @@
 # tree-selector
-[![Build Status](https://travis-ci.org/jvanbruegge/tree-selector.svg?branch=master)](https://travis-ci.org/jvanbruegge/tree-selector) [![codecov](https://codecov.io/gh/jvanbruegge/tree-selector/branch/master/graph/badge.svg)](https://codecov.io/gh/jvanbruegge/tree-selector)
+[![Build Status](https://travis-ci.org/jvanbruegge/tree-selector.svg?branch=master)](https://travis-ci.org/jvanbruegge/tree-selector) [![codecov](https://codecov.io/gh/jvanbruegge/tree-selector/branch/master/graph/badge.svg)](https://codecov.io/gh/jvanbruegge/tree-selector) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 build a matching or query function for CSS selectors for any nested object structure!
 
