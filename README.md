@@ -1,40 +1,48 @@
 # tree-selector
 [![Build Status](https://travis-ci.org/jvanbruegge/tree-selector.svg?branch=master)](https://travis-ci.org/jvanbruegge/tree-selector) [![codecov](https://codecov.io/gh/jvanbruegge/tree-selector/branch/master/graph/badge.svg)](https://codecov.io/gh/jvanbruegge/tree-selector)
 
-build a matching function in CSS for any nested object structure!
+build a matching or query function for CSS selectors for any nested object structure!
 
-```javascript
-import { createQuerySelector } from 'tree-selector';
+```js
+import { createQuerySelector, createMatches } from 'tree-selector';
 
-const querySelector = createQuerySelector({
+const options = {
     tag: n => n.tagName,
     contents: n => n.innerText,
     id: n => n.id,
     class: n => n.className,
+    parent: n => n.parentElement,
     children: n => n.childNodes,
     attr: (n, attr) => n.getAttribute(attr)
-})
+};
 
-const query = querySelector('body > #header .logo');
-const element = document.getElementsByClassName('logo')[0]
+const querySelector = createQuerySelector(options);
+const matches = createMatches(options);
 
-if(query(element).length > 0) {
+const selector = 'span.mySpan';
+const element = document.getElementsByClassName('span')[0]
+
+if(matches(selector, element)) {
   // there are elements matching the selector
 } else {
   // no elements found
 }
 
-//Also possible
-if(querySelector('body > #header .logo', element).length > 0) {
+//Also possible, but less efficient
+if(querySelector(selector, element).length > 0) {
     // there are elements found
 }
 ```
 
 # API
 
-### createQuerySelector(options) -> querySelector factory
+### createQuerySelector(options) -> querySelector
 
 Configure `tree-selector` for the nested object structure you'll want to match against.
+
+### createMatches(options) -> matches
+
+Configure a `matches` function for a node in your tree structure. (This is used internally by `createQuerySelector`)
 
 #### options
 
@@ -45,6 +53,7 @@ Configure `tree-selector` for the nested object structure you'll want to match a
 * `contents`: Extract text information from a node, for `:contains(xxx)` selectors.
 * `id`: Extract id for `#my_sweet_id` selectors.
 * `class`: `.class_name`
+* `parent`: Used for sibling selectors
 * `children`: Used to traverse from a parent to its children for sibling selectors `div + span`, `a ~ p`.
 * `attr`: Used to extract attribute information, for `[attr=thing]` style selectors.
 
@@ -56,7 +65,6 @@ Configure `tree-selector` for the nested object structure you'll want to match a
  - `:empty`
  - `:root`
  - `:contains(text)`
- - `:any(selector, selector, selector)`
 
 ## Supported attribute lookups
 
