@@ -5,7 +5,7 @@ export function createMatches<T>(
     opts: Options<T>
 ): (selector: string | Selector, node: T) => boolean {
     return function matches(selector: string | Selector, node: T): boolean {
-        const { tag, id, classList, attributes, nextSelector } =
+        const { tag, id, classList, attributes, nextSelector, pseudos } =
             typeof selector === 'object' ? selector : parseSelector(selector);
 
         if (nextSelector !== undefined) {
@@ -52,6 +52,35 @@ export function createMatches<T>(
             }
             if (t === 'dash' && attr.split('-').indexOf(v) === -1) {
                 return false;
+            }
+        }
+
+        for (let i = 0; i < pseudos.length; i++) {
+            const [t, data] = pseudos[i];
+            if(t === 'contains' && data !== opts.contents(node)) {
+                return false;
+            }
+            if(t === 'empty' && (opts.contents(node) || opts.children(node).length !== 0)) {
+                return false;
+            }
+            if(t === 'root' && opts.parent(node) !== undefined) {
+                return false;
+            }
+            if(t.indexOf('child') !== -1) {
+                if(!opts.parent(node)) {
+                    return false;
+                }
+                const siblings = opts.children(opts.parent(node) as T);
+                if(t === 'first-child' && siblings.indexOf(node) !== 0) {
+                    return false;
+                }
+                if(t === 'last-child' && siblings.indexOf(node) !== siblings.length - 1) {
+                    return false;
+                }
+                if(t === 'nth-child') {
+                    const regex = /([\+-]?)(\d*)(n?)(\+\d+)?/;
+                    console.log(regex.exec(data as string));
+                }
             }
         }
 
