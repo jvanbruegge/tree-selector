@@ -7,18 +7,42 @@ export function createQuerySelector<T>(
 ): (sel: string | Selector, node: T) => T[] {
     const matches = createMatches(options);
 
-    function find(selector: Selector, depth: number, node: T): T[] {
+    function findSubtree(selector: Selector, depth: number, node: T): T[] {
         const matched = matches(selector, node) ? [node] : [];
-        if(depth > 0) {
-            const childMatched = options
-                .children(node)
-                .filter(c => typeof c !== 'string')
-                .map(c => find(selector, depth - 1, c as T))
-                .reduce((acc, curr) => acc.concat(curr), []);
-
-            return matched.concat(childMatched);
+        if(depth === 0) {
+            return matched;
         }
-        return matched;
+        const childMatched = options
+            .children(node)
+            .filter(c => typeof c !== 'string')
+            .map(c => findSubtree(selector, depth - 1, c as T))
+            .reduce((acc, curr) => acc.concat(curr), []);
+
+        return matched.concat(childMatched);
+    }
+
+    function findSibling(selector: Selector, next: boolean, node: T): T[] {
+        if(options.parent(node) === undefined) {
+            return [];
+        }
+
+        let results: T[] = [];
+        const siblings = options.children(options.parent(node) as T);
+
+        for(let i = siblings.indexOf(node) + 1; i < siblings.length; i++) {
+            if(typeof siblings[i] === 'string') {
+                continue;
+            }
+            if(matches(selector, siblings[i] as T)) {
+                results.push(siblings[i] as T);
+            }
+
+            if(next) {
+                break;
+            }
+        }
+
+        return results;
     }
 
     return function querySelector(selector: string | Selector, node: T): T[] {
@@ -34,11 +58,19 @@ export function createQuerySelector<T>(
             tail = currentSelector.nextSelector;
             currentSelector.nextSelector = undefined;
 
-            const depth = currentCombinator === 'subtree' ? Infinity : 1;
+            if(currentCombinator === 'subtree' || currentCombinator === 'child') {
+                const depth = currentCombinator === 'subtree' ? Infinity : 1;
 
-            results = results
-                .map(n => find(currentSelector, depth, n))
-                .reduce((acc, curr) => acc.concat(curr), []);
+                results = results
+                    .map(n => findSubtree(currentSelector, depth, n))
+                    .reduce((acc, curr) => acc.concat(curr), []);
+            } else {
+                const next = currentCombinator === 'nextSibling';
+
+                results = results
+                    .map(n => findSibling(currentSelector, next, n))
+                    .reduce((acc, curr) => acc.concat(curr), []);
+            }
 
             if (tail) {
                 currentSelector = tail[1];

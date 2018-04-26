@@ -1,5 +1,6 @@
 import { createQuerySelector } from '../src/index';
 
+import { addParents } from './utils';
 import { VNode, options } from './vnode';
 
 const assert = require('assert');
@@ -68,5 +69,61 @@ describe('querySelector', () => {
         assert.strictEqual(result[0].className, 'class class1');
         assert.strictEqual(result[1].tag, 'div');
         assert.strictEqual(result[1].className, 'class class2');
+    });
+
+    it('should find node with sibling selector', () => {
+        const selector = 'div#id + .class';
+        const vtree = addParents({
+            tag: 'div',
+            children: [
+                { tag: 'span', id: 'id' },
+                { tag: 'div', id: 'id' },
+                { tag: 'h1', className: 'class' }
+            ]
+        });
+
+        const result = querySelector(selector, vtree);
+
+        assert.strictEqual(result.length, 1);
+        assert.strictEqual(typeof result[0], 'object');
+        assert.strictEqual(result[0].tag, 'h1');
+        assert.strictEqual(result[0].className, 'class');
+    });
+
+    it('should not match node if not next sibling', () => {
+        const selector = 'div#id + h1.class';
+        const vtree = addParents({
+            tag: 'div',
+            children: [
+                { tag: 'span', id: 'id' },
+                { tag: 'div', id: 'id' },
+                { tag: 'div', className: 'class' },
+                { tag: 'h1', className: 'class' }
+            ]
+        });
+
+        const result = querySelector(selector, vtree);
+
+        assert.strictEqual(result.length, 0);
+    });
+
+    it('should find node with sibling selector', () => {
+        const selector = 'div#id ~ h1.class';
+        const vtree = addParents({
+            tag: 'div',
+            children: [
+                { tag: 'span', id: 'id' },
+                { tag: 'div', id: 'id' },
+                { tag: 'div', className: 'class' },
+                { tag: 'h1', className: 'class' }
+            ]
+        });
+
+        const result = querySelector(selector, vtree);
+
+        assert.strictEqual(result.length, 1);
+        assert.strictEqual(typeof result[0], 'object');
+        assert.strictEqual(result[0].tag, 'h1');
+        assert.strictEqual(result[0].className, 'class');
     });
 });
