@@ -12,8 +12,8 @@
     "test": "nyc mocha",
     "format": "prettier --write './{src,test}/**/*.ts'",
     "build": "npm run build:es6 && npm run build:cjs",
-    "build:es6": "tsc --module es6 --outDir ./lib/es6/",
-    "build:cjs": "tsc --module commonjs --outDir ./lib/cjs/",
+    "build:es6": "tsc -d --module es6 --outDir ./lib/es6/",
+    "build:cjs": "tsc -d --module commonjs --outDir ./lib/cjs/",
     "prepublishOnly": "npm run build"
   },
   "repository": {
