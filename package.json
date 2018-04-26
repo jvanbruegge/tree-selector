@@ -31,7 +31,10 @@
         ".ts"
     ],
     "include": [
-        "src/*.ts"
+        "src/index.ts",
+        "src/matches.ts",
+        "src/querySelector.ts",
+        "src/selectorParser.ts"
     ],
     "reporter": [
         "html",

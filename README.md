@@ -1,5 +1,5 @@
 # tree-selector
-[![Build Status](https://travis-ci.org/jvanbruegge/tree-selector.svg?branch=master)](https://travis-ci.org/jvanbruegge/tree-selector)
+[![Build Status](https://travis-ci.org/jvanbruegge/tree-selector.svg?branch=master)](https://travis-ci.org/jvanbruegge/tree-selector) [![codecov](https://codecov.io/gh/jvanbruegge/tree-selector/branch/master/graph/badge.svg)](https://codecov.io/gh/jvanbruegge/tree-selector)
 
 build a matching function in CSS for any nested object structure!
 
