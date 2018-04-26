@@ -57,29 +57,65 @@ export function createMatches<T>(
 
         for (let i = 0; i < pseudos.length; i++) {
             const [t, data] = pseudos[i];
-            if(t === 'contains' && data !== opts.contents(node)) {
+            if (t === 'contains' && data !== opts.contents(node)) {
                 return false;
             }
-            if(t === 'empty' && (opts.contents(node) || opts.children(node).length !== 0)) {
+            if (
+                t === 'empty' &&
+                (opts.contents(node) || opts.children(node).length !== 0)
+            ) {
                 return false;
             }
-            if(t === 'root' && opts.parent(node) !== undefined) {
+            if (t === 'root' && opts.parent(node) !== undefined) {
                 return false;
             }
-            if(t.indexOf('child') !== -1) {
-                if(!opts.parent(node)) {
+            if (t.indexOf('child') !== -1) {
+                if (!opts.parent(node)) {
                     return false;
                 }
                 const siblings = opts.children(opts.parent(node) as T);
-                if(t === 'first-child' && siblings.indexOf(node) !== 0) {
+                if (t === 'first-child' && siblings.indexOf(node) !== 0) {
                     return false;
                 }
-                if(t === 'last-child' && siblings.indexOf(node) !== siblings.length - 1) {
+                if (
+                    t === 'last-child' &&
+                    siblings.indexOf(node) !== siblings.length - 1
+                ) {
                     return false;
                 }
-                if(t === 'nth-child') {
+                if (t === 'nth-child') {
                     const regex = /([\+-]?)(\d*)(n?)(\+\d+)?/;
-                    console.log(regex.exec(data as string));
+                    const parseResult = (regex.exec(
+                        data as string
+                    ) as string[]).slice(1);
+                    const index = siblings.indexOf(node);
+                    if (!parseResult[0]) {
+                        parseResult[0] = '+';
+                    }
+                    const factor = parseResult[1]
+                        ? parseInt(parseResult[0] + parseResult[1])
+                        : undefined;
+                    const add = parseInt(parseResult[3] || '0');
+                    if (
+                        factor &&
+                        parseResult[1] &&
+                        parseResult[2] === 'n' &&
+                        index % factor !== add
+                    ) {
+                        return false;
+                    } else if (
+                        !factor &&
+                        parseResult[2] &&
+                        ((parseResult[0] === '+' && index - add < 0) ||
+                            (parseResult[0] === '-' && index - add >= 0))
+                    ) {
+                        return false;
+                    } else if (
+                        !parseResult[2] &&
+                        index !== parseInt(parseResult[0] + parseResult[1])
+                    ) {
+                        return false;
+                    }
                 }
             }
         }

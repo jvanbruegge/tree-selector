@@ -48,7 +48,7 @@ const SIBLING = `(?:${SPACE}(~)${SPACE})`;
 const COMBINATOR = `(?:${SUBTREE}|${CHILD}|${NEXT_SIBLING}|${SIBLING})`;
 
 const CONTAINS = `contains\\([^\\)]*\\)`;
-const FORMULA = `(?:even|odd|\\d*(?:-?n\\+\\d+)?)`;
+const FORMULA = `(?:even|odd|\\d*(?:-?n(?:\\+\\d+)?)?)`;
 const NTH_CHILD = `nth-child\\(${FORMULA}\\)`;
 
 const PSEUDO = `:(?:first-child|last-child|${NTH_CHILD}|empty|root|${CONTAINS})`;
@@ -79,9 +79,7 @@ export function parseSelector(selector: string): Selector {
     while (regex.lastIndex < sel.length) {
         const match = regex.exec(sel);
         if (!match && lastCombinator === undefined) {
-            throw new Error(
-                `Parse error, invalid selector at char ${regex.lastIndex}`
-            );
+            throw new Error('Parse error, invalid selector');
         } else if (match && combinatorRegex.test(match[0])) {
             const comb = (combinatorRegex.exec(match[0]) as string[])[0];
             lastCombinator = comb;

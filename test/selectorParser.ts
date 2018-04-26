@@ -67,7 +67,7 @@ describe('parseSelector', () => {
         for (let selectorArray of tests) {
             assert.throws(
                 () => parseSelector(selectorArray.join('')),
-                /Parse error, invalid selector at char \d+/
+                /Parse error, invalid selector/
             );
         }
     });
