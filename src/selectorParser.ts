@@ -4,7 +4,16 @@ export interface Selector {
     classList: string[];
     attributes: Attributes;
     nextSelector: [Combinator, Selector] | undefined;
+    pseudos: Pseudo[];
 }
+
+export type Pseudo =
+    | ['first-child', undefined]
+    | ['last-child', undefined]
+    | ['nth-child', string]
+    | ['empty', undefined]
+    | ['root', undefined]
+    | ['contains', string];
 
 export interface Attributes {
     [attr: string]: [AttributeMatch, string];
@@ -38,8 +47,14 @@ const SIBLING = `(?:${SPACE}(~)${SPACE})`;
 
 const COMBINATOR = `(?:${SUBTREE}|${CHILD}|${NEXT_SIBLING}|${SIBLING})`;
 
+const CONTAINS = `contains\\([^\\)]*\\)`;
+const FORMULA = `(?:even|odd|\\d*(?:-?n\\+\\d+)?)`;
+const NTH_CHILD = `nth-child\\(${FORMULA}\\)`;
+
+const PSEUDO = `:(?:first-child|last-child|${NTH_CHILD}|empty|root|${CONTAINS})`;
+
 const TAG = `(:?${IDENT})?`;
-const TOKENS = `${CLASS}|${ID}|${ATTR}|${COMBINATOR}`;
+const TOKENS = `${CLASS}|${ID}|${ATTR}|${PSEUDO}|${COMBINATOR}`;
 
 const combinatorRegex = new RegExp(`^${COMBINATOR}$`);
 
@@ -104,13 +119,42 @@ export function parseSelector(selector: string): Selector {
         }))
         .reduce((acc, curr) => ({ ...acc, ...curr }), {}) as Attributes;
 
+    const pseudos = matches
+        .filter(s => s.startsWith(':'))
+        .map(s => postProcessPseudos(s.substring(1)));
+
     return {
         id: ids[0] || '',
         tag,
         classList,
         attributes: attrs,
-        nextSelector
+        nextSelector,
+        pseudos
     };
+}
+
+function postProcessPseudos(sel: string): Pseudo {
+    if (
+        sel === 'first-child' ||
+        sel === 'last-child' ||
+        sel === 'root' ||
+        sel === 'empty'
+    ) {
+        return [sel, undefined] as Pseudo;
+    }
+    if (sel.startsWith('contains')) {
+        const text = sel.slice(9, -1);
+        return ['contains', text];
+    }
+
+    let content = sel.slice(10, -1);
+    if (content === 'even') {
+        content = '2n';
+    }
+    if (content === 'odd') {
+        content = '2n+1';
+    }
+    return ['nth-child', content];
 }
 
 function getOp(op: string): string {

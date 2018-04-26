@@ -30,11 +30,17 @@ describe('querySelector', () => {
             tag: 'div',
             children: [
                 { tag: 'span', id: 'id' },
-                { tag: 'div', id: 'id', children: [
-                    { tag: 'div', className: 'class right', children: [
-                        { tag: 'div', className: 'class wrong' }
-                    ] }
-                ] }
+                {
+                    tag: 'div',
+                    id: 'id',
+                    children: [
+                        {
+                            tag: 'div',
+                            className: 'class right',
+                            children: [{ tag: 'div', className: 'class wrong' }]
+                        }
+                    ]
+                }
             ]
         };
 
@@ -52,11 +58,19 @@ describe('querySelector', () => {
             tag: 'div',
             children: [
                 { tag: 'span', id: 'id' },
-                { tag: 'div', id: 'id', children: [
-                    { tag: 'div', className: 'class class1', children: [
-                        { tag: 'div', className: 'class class2' }
-                    ] }
-                ] }
+                {
+                    tag: 'div',
+                    id: 'id',
+                    children: [
+                        {
+                            tag: 'div',
+                            className: 'class class1',
+                            children: [
+                                { tag: 'div', className: 'class class2' }
+                            ]
+                        }
+                    ]
+                }
             ]
         };
 

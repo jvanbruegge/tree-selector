@@ -20,6 +20,7 @@ describe('parseSelector', () => {
             classList: ['class1', 'class2', 'class3'],
             id: 'id',
             tag: '',
+            pseudos: [],
             attributes: {
                 attr: ['truthy', undefined],
                 attr2: ['exact', 'foo'],
@@ -79,6 +80,7 @@ describe('parseSelector', () => {
             tag: 'div',
             classList: [],
             attributes: {},
+            pseudos: [],
             nextSelector: [
                 'subtree',
                 {
@@ -86,6 +88,7 @@ describe('parseSelector', () => {
                     tag: 'div',
                     classList: [],
                     attributes: {},
+                    pseudos: [],
                     nextSelector: undefined
                 }
             ]
@@ -102,6 +105,7 @@ describe('parseSelector', () => {
             tag: 'div',
             classList: [],
             attributes: {},
+            pseudos: [],
             nextSelector: [
                 'subtree',
                 {
@@ -109,6 +113,7 @@ describe('parseSelector', () => {
                     tag: 'div',
                     classList: [],
                     attributes: {},
+                    pseudos: [],
                     nextSelector: [
                         'nextSibling',
                         {
@@ -118,6 +123,7 @@ describe('parseSelector', () => {
                             attributes: {
                                 attr: ['exact', '  f']
                             },
+                            pseudos: [],
                             nextSelector: undefined
                         }
                     ]
@@ -126,5 +132,34 @@ describe('parseSelector', () => {
         };
 
         assert.deepStrictEqual(result, expected);
+    });
+
+    it('should parse pseudo selectors', () => {
+        const pseudoSelectors = [
+            ['last-child'],
+            ['first-child'],
+            ['nth-child', '2n+1'],
+            ['nth-child', '-n+11'],
+            ['root'],
+            ['empty'],
+            ['contains', 'blabla']
+        ].map(arr => (arr.length === 1 ? [arr[0], undefined] : arr));
+
+        for (let [k, v] of pseudoSelectors) {
+            let selector = 'div:' + k;
+            if (v !== undefined) {
+                selector += `(${v})`;
+            }
+            const result = parseSelector(selector);
+            const expected = {
+                id: '',
+                tag: 'div',
+                classList: [],
+                attributes: {},
+                nextSelector: undefined,
+                pseudos: [[k, v]]
+            };
+            assert.deepStrictEqual(result, expected);
+        }
     });
 });

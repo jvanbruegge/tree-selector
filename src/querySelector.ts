@@ -9,7 +9,7 @@ export function createQuerySelector<T>(
 
     function findSubtree(selector: Selector, depth: number, node: T): T[] {
         const matched = matches(selector, node) ? [node] : [];
-        if(depth === 0) {
+        if (depth === 0) {
             return matched;
         }
         const childMatched = options
@@ -22,22 +22,22 @@ export function createQuerySelector<T>(
     }
 
     function findSibling(selector: Selector, next: boolean, node: T): T[] {
-        if(options.parent(node) === undefined) {
+        if (options.parent(node) === undefined) {
             return [];
         }
 
         let results: T[] = [];
         const siblings = options.children(options.parent(node) as T);
 
-        for(let i = siblings.indexOf(node) + 1; i < siblings.length; i++) {
-            if(typeof siblings[i] === 'string') {
+        for (let i = siblings.indexOf(node) + 1; i < siblings.length; i++) {
+            if (typeof siblings[i] === 'string') {
                 continue;
             }
-            if(matches(selector, siblings[i] as T)) {
+            if (matches(selector, siblings[i] as T)) {
                 results.push(siblings[i] as T);
             }
 
-            if(next) {
+            if (next) {
                 break;
             }
         }
@@ -58,7 +58,10 @@ export function createQuerySelector<T>(
             tail = currentSelector.nextSelector;
             currentSelector.nextSelector = undefined;
 
-            if(currentCombinator === 'subtree' || currentCombinator === 'child') {
+            if (
+                currentCombinator === 'subtree' ||
+                currentCombinator === 'child'
+            ) {
                 const depth = currentCombinator === 'subtree' ? Infinity : 1;
 
                 results = results
