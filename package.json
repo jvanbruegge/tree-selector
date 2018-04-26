@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register --timeout 10000 {test,src}/**/*.ts",
+    "test": "nyc mocha",
     "format": "prettier --write './{src,test}/**/*.ts'",
     "build": "npm run build:es6 && npm run build:cjs",
     "build:es6": "tsc --module es6 --outDir ./lib/es6/",
@@ -26,6 +26,19 @@
     "parser",
     "match"
   ],
+  "nyc": {
+    "extension": [
+        ".ts"
+    ],
+    "include": [
+        "src/*.ts"
+    ],
+    "reporter": [
+        "html",
+        "json"
+    ],
+    "all": true
+  },
   "prettier": {
     "tabWidth": 4,
     "singleQuote": true
@@ -36,8 +49,10 @@
     "@types/mocha": "^5.2.0",
     "@types/node": "^9.6.6",
     "mocha": "^5.1.1",
+    "nyc": "^11.7.1",
     "prettier": "^1.12.1",
     "release-it": "^3.2.0",
+    "source-map-support": "^0.5.5",
     "ts-node": "^6.0.0",
     "typescript": "^2.8.3"
   }
