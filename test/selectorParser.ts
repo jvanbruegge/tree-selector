@@ -166,4 +166,21 @@ describe('parseSelector', () => {
             assert.deepStrictEqual(result, expected);
         }
     });
+
+    it('should parse attribute selector string without quotes', () => {
+        const selector = '[data-something=foo]';
+
+        const result = parseSelector(selector);
+        const expected = {
+            id: '',
+            tag: '',
+            classList: [],
+            attributes: {
+                'data-something': ['exact', 'foo']
+            },
+            nextSelector: undefined,
+            pseudos: []
+        };
+        assert.deepStrictEqual(result, expected);
+    });
 });

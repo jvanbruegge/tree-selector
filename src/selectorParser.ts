@@ -141,7 +141,11 @@ function parseAttrValue(v: string): string | boolean | number {
     if(v === "false") {
         return false;
     }
-    return parseFloat(v);
+    const f = parseFloat(v);
+    if(isNaN(f)) {
+        return v;
+    }
+    return f;
 }
 
 function postProcessPseudos(sel: string): Pseudo {
