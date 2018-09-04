@@ -1,5 +1,4 @@
 import { parseSelector } from '../src/index';
-import { permutations } from './utils';
 
 const assert = require('assert');
 
@@ -21,6 +20,7 @@ describe('parseSelector', () => {
             id: 'id',
             tag: '',
             pseudos: [],
+            nextSelector: undefined,
             attributes: {
                 attr: ['truthy', undefined],
                 attr2: ['exact', 'foo'],
@@ -30,17 +30,14 @@ describe('parseSelector', () => {
             }
         };
 
-        const tests = permutations(selectors);
-        for (let selectorArray of tests) {
-            const sel = selectorArray.join('');
-            const result = parseSelector(sel);
-            result.classList.sort();
-            assert.deepStrictEqual(result, expected);
+        const sel = selectors.join('');
+        const result = parseSelector(sel);
+        result.classList.sort();
+        assert.deepStrictEqual(result, expected);
 
-            const result2 = parseSelector('tag' + sel);
-            result2.classList.sort();
-            assert.deepStrictEqual(result2, { ...expected, tag: 'tag' });
-        }
+        const result2 = parseSelector('tag' + sel);
+        result2.classList.sort();
+        assert.deepStrictEqual(result2, { ...expected, tag: 'tag' });
     });
 
     it('should throw when specifying an id twice', () => {
@@ -63,13 +60,10 @@ describe('parseSelector', () => {
             '[ attr5     |="   "]'
         ];
 
-        const tests = permutations(selectors);
-        for (let selectorArray of tests) {
-            assert.throws(
-                () => parseSelector(selectorArray.join('')),
-                /Parse error, invalid selector/
-            );
-        }
+        assert.throws(
+            () => parseSelector(selectors.join('')),
+            /Parse error, invalid selector/
+        );
     });
 
     it('should parse a simple subtree selector', () => {
