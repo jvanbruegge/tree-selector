@@ -52,6 +52,24 @@ describe('matches', () => {
         );
     });
 
+    it('should match against a falsy attribute selector', () => {
+        const testElement = {
+            tag: 'div',
+            className: 'foo bar baz',
+            attributes: {
+                test: '',
+                bar: false,
+                zuz: 'bar loo goo'
+            }
+        };
+
+        assert.equal(
+            matches('[test][bar][zuz~="loo"]', testElement),
+            true
+        );
+    });
+
+
     it('should not match against an attribute selector', () => {
         const testElement = {
             tag: 'div',

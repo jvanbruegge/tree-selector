@@ -21,7 +21,7 @@ export interface Attributes {
 
 export type AttributeMatch =
     | 'exact'
-    | 'truthy'
+    | 'has'
     | 'startsWith'
     | 'endsWith'
     | 'contains'
@@ -187,7 +187,7 @@ function getOp(op: string): string {
         case '|=':
             return 'dash';
         default:
-            return 'truthy';
+            return 'has';
     }
 }
 
