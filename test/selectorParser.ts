@@ -1,6 +1,7 @@
 import * as permutations from 'get-permutations';
-import { parseSelector } from '../src/index';
 import * as assert from 'assert';
+
+import { parseSelector } from '../src/index';
 
 describe('parseSelector', () => {
     it('should parse all permutations of a selector', () => {

@@ -1,9 +1,8 @@
+import * as assert from 'assert';
 import { createMatches } from '../src/index';
 
 import { VNode, options } from './vnode';
 import { addParents } from './utils';
-
-const assert = require('assert');
 
 const matches = createMatches<VNode>(options);
 

@@ -4,7 +4,7 @@ import { parseSelector, Selector } from './selectorParser';
 export function createMatches<T>(
     opts: Options<T>
 ): (selector: string | Selector, node: T) => boolean {
-    return function matches(selector: string | Selector, node: T): boolean {
+    return function matches(selector: string | Selector, node: T | undefined): boolean {
         const { tag, id, classList, attributes, nextSelector, pseudos } =
             typeof selector === 'object' ? selector : parseSelector(selector);
 
@@ -12,6 +12,9 @@ export function createMatches<T>(
             throw new Error(
                 'matches can only process selectors that target a single element'
             );
+        }
+        if(!node) {
+            return false;
         }
 
         if (tag && tag.toLowerCase() !== opts.tag(node).toLowerCase()) {

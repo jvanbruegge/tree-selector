@@ -4,7 +4,7 @@ export interface VNode {
     tag: string;
     className?: string;
     attributes?: any;
-    children?: (string | VNode)[];
+    children?: (string | VNode | undefined | null)[];
     contents?: string;
     parent?: VNode;
     id?: string;

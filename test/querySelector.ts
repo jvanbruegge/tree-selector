@@ -1,9 +1,8 @@
+import * as assert from 'assert';
 import { createQuerySelector } from '../src/index';
 
 import { addParents } from './utils';
 import { VNode, options } from './vnode';
-
-const assert = require('assert');
 
 const querySelector = createQuerySelector(options);
 
@@ -128,7 +127,9 @@ describe('querySelector', () => {
             children: [
                 { tag: 'span', id: 'id' },
                 { tag: 'div', id: 'id' },
+                undefined,
                 { tag: 'div', className: 'class' },
+                null,
                 { tag: 'h1', className: 'class' }
             ]
         });

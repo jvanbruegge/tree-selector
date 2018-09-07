@@ -8,7 +8,10 @@ export function createQuerySelector<T>(
 ): (sel: string | Selector, node: T) => T[] {
     const _matches = matches || createMatches(options);
 
-    function findSubtree(selector: Selector, depth: number, node: T): T[] {
+    function findSubtree(selector: Selector, depth: number, node: T | undefined): T[] {
+        if(!node) {
+            return [];
+        }
         const n = _matches(selector, node);
         const matched = n ? (typeof n === 'object' ? [n] : [node]) : [];
         if (depth === 0) {
@@ -23,8 +26,8 @@ export function createQuerySelector<T>(
         return matched.concat(childMatched);
     }
 
-    function findSibling(selector: Selector, next: boolean, node: T): T[] {
-        if (options.parent(node) === undefined) {
+    function findSibling(selector: Selector, next: boolean, node: T | undefined): T[] {
+        if (!node || options.parent(node) === undefined) {
             return [];
         }
 
@@ -52,7 +55,10 @@ export function createQuerySelector<T>(
         return results;
     }
 
-    return function querySelector(selector: string | Selector, node: T): T[] {
+    return function querySelector(selector: string | Selector, node: T | undefined): T[] {
+        if(!node) {
+            return [];
+        }
         const sel =
             typeof selector === 'object' ? selector : parseSelector(selector);
 
