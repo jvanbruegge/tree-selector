@@ -32,8 +32,11 @@ export function createMatches<T>(
             const t = attributes[key][0];
             const v = attributes[key][1];
 
-            if (!attr) {
+            if (attr === undefined) {
                 return false;
+            }
+            if (t === 'has') {
+                return true;
             }
             if (t === 'exact' && attr !== v) {
                 return false;

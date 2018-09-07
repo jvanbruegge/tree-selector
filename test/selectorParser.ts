@@ -20,9 +20,9 @@ describe('parseSelector', () => {
             pseudos: [],
             nextSelector: undefined,
             attributes: {
-                attr: ['truthy', undefined],
+                attr: ['has', undefined],
                 attr3: ['contains', 'foo'],
-                attr4: ['truthy', undefined],
+                attr4: ['has', undefined],
                 attr5: ['dash', '   ']
             }
         };
