@@ -1,5 +1,6 @@
 import { VNode } from './vnode';
 
+export function addParents(node: VNode): VNode;
 export function addParents(node: VNode | undefined | null): VNode | undefined | null {
     if(node) {
         node.children = !node.children
