@@ -1,29 +1,26 @@
+import * as permutations from 'get-permutations';
 import { parseSelector } from '../src/index';
-import { permutations } from './utils';
-
-const assert = require('assert');
+import * as assert from 'assert';
 
 describe('parseSelector', () => {
     it('should parse all permutations of a selector', () => {
         const selectors = [
             '.class2',
             '.class1',
-            '.class3',
             '#id',
             '[attr]',
-            '[attr2="foo"]',
             '[attr3*=    "foo"]',
             '[    attr4   ]',
             '[ attr5     |="   "]'
         ];
         const expected = {
-            classList: ['class1', 'class2', 'class3'],
+            classList: ['class1', 'class2'],
             id: 'id',
             tag: '',
             pseudos: [],
+            nextSelector: undefined,
             attributes: {
                 attr: ['truthy', undefined],
-                attr2: ['exact', 'foo'],
                 attr3: ['contains', 'foo'],
                 attr4: ['truthy', undefined],
                 attr5: ['dash', '   ']
@@ -53,11 +50,8 @@ describe('parseSelector', () => {
     it('should throw with invalid selector', () => {
         const selectors = [
             '.class2',
-            '.class1',
-            '.class3',
             '#id',
             '[attr',
-            '[attr2="foo"]',
             '[attr3*=    "foo"]',
             '    attr4   ]',
             '[ attr5     |="   "]'
