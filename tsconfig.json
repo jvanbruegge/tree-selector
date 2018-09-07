@@ -10,6 +10,7 @@
     "lib": ["ES6", "ES5", "DOM"]
   },
   "include": [
-      "src/"
+      "src/",
+      "custom-typings.d.ts"
     ]
 }
