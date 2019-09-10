@@ -1,6 +1,6 @@
 {
   "name": "tree-selector",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Use CSS selectors to match nodes in a custom object tree",
   "main": "lib/cjs/index.js",
   "module": "lib/es6/index.js",
