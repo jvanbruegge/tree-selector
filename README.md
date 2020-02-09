@@ -10,7 +10,7 @@ const options = {
     tag: n => n.tagName,
     contents: n => n.innerText,
     id: n => n.id,
-    class: n => n.className,
+    className: n => n.className,
     parent: n => n.parentElement,
     children: n => n.childNodes,
     attr: (n, attr) => n.getAttribute(attr)
@@ -52,7 +52,7 @@ Configure a `matches` function for a node in your tree structure. (This is used 
 * `tag`: Extract tag information from a node for `div` style selectors.
 * `contents`: Extract text information from a node, for `:contains(xxx)` selectors.
 * `id`: Extract id for `#my_sweet_id` selectors.
-* `class`: `.class_name`
+* `className`: `.class_name`
 * `parent`: Used for sibling selectors
 * `children`: Used to traverse from a parent to its children for sibling selectors `div + span`, `a ~ p`.
 * `attr`: Used to extract attribute information, for `[attr=thing]` style selectors.
